@@ -55,12 +55,13 @@ private:
     juce::Image backgroundImg;
     juce::Image knobImg;
     juce::Image knob2Img;
-     juce::Image buttonImg;
+    juce::Image buttonImg;
     juce::Image buttonSelectedImg;
 
      juce::Slider inputKnob, outputKnob, attackKnob, releaseKnob;
 
-     juce::ImageButton ratio4Button, ratio8Button, ratio12Button, ratio20Button, allButtonsButton;
+    juce::ImageButton ratio4Button, ratio8Button, ratio12Button, ratio20Button, allButtonsButton;
+    juce::ImageButton grButton, gr8Button, gr4Button, grOffButton;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> inputAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> outputAttachment;

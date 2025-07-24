@@ -124,6 +124,35 @@ SeventySixCompressorAudioProcessorEditor::SeventySixCompressorAudioProcessorEdit
 			audioProcessor.apvts.getParameter("Ratio")->setValueNotifyingHost(1.0f);
 		};
 
+		grButton.setImages(false, true, true, buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonSelectedImg, 1.0f, juce::Colours::transparentBlack);
+		addAndMakeVisible(grButton);
+
+		gr4Button.setImages(false, true, true, buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonSelectedImg, 1.0f, juce::Colours::transparentBlack);
+		addAndMakeVisible(gr4Button);
+
+		gr8Button.setImages(false, true, true, buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonSelectedImg, 1.0f, juce::Colours::transparentBlack);
+		addAndMakeVisible(gr8Button);
+
+		grOffButton.setImages(false, true, true, buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonImg, 1.0f, juce::Colours::transparentBlack,
+				buttonSelectedImg, 1.0f, juce::Colours::transparentBlack);
+		addAndMakeVisible(grOffButton);
+
+		grButton.onClick  = [this] { meterMode = GR; };
+		gr4Button.onClick  = [this] { meterMode = PLUS4; };
+		gr8Button.onClick  = [this] { meterMode = PLUS8; };
+		grOffButton.onClick  = [this] { meterMode = OFF; };
+
+		grButton.setRadioGroupId(2);
+		gr4Button.setRadioGroupId(2);
+		gr8Button.setRadioGroupId(2);
+		grOffButton.setRadioGroupId(2);
 		startTimerHz(30);
 		timerCallback();
 }
@@ -137,6 +166,8 @@ void SeventySixCompressorAudioProcessorEditor::paint (juce::Graphics& g)
 {
 		g.drawImage(backgroundImg, getLocalBounds().toFloat());
 
+		float minDb = -20.0f;
+		float maxDb = 3.0f;
 		float meterValue = 0.0f;
 		if (meterMode != OFF)
 		{
@@ -145,24 +176,21 @@ void SeventySixCompressorAudioProcessorEditor::paint (juce::Graphics& g)
 				meterValue += 4.0f;
 			else if (meterMode == PLUS8)
 				meterValue += 8.0f;
-			float minDb = -20.0f;
-			float maxDb = 3.0f;
 			meterValue = juce::jlimit(minDb, maxDb, meterValue);
-			float norm = (meterValue - minDb) / (maxDb - minDb);
-
-			juce::Point<float> center(565, 85);
-			float radius = 40.0f;
-			float startAngle = juce::MathConstants<float>::pi * 5.0f / 6.0f;
-			float endAngle = juce::MathConstants<float>::pi * 2.0f / 6.0f;
-			float angle = startAngle + norm * (endAngle - startAngle);
-			juce::Point<float> needleEnd = center + juce::Point<float>(std::cos(angle), -std::sin(angle)) * radius;
-			g.setColour(juce::Colours::black);
-			g.drawLine(center.x, center.y, needleEnd.x, needleEnd.y, 1.0f);
-
-			g.setColour(juce::Colours::black);
-			g.setFont(14.0f);
-			g.drawFittedText(juce::String(meterValue, 2) + " dB", center.x - 30, center.y + 20, 60, 20, juce::Justification::centred, 1);
 		}
+		float norm = (meterValue - minDb) / (maxDb - minDb);
+		juce::Point<float> center(565, 85);
+		float radius = 40.0f;
+		float startAngle = juce::MathConstants<float>::pi * 5.0f / 6.0f;
+		float endAngle = juce::MathConstants<float>::pi * 2.0f / 6.0f;
+		float angle = startAngle + norm * (endAngle - startAngle);
+		juce::Point<float> needleEnd = center + juce::Point<float>(std::cos(angle), -std::sin(angle)) * radius;
+		g.setColour(juce::Colours::black);
+		g.drawLine(center.x, center.y, needleEnd.x, needleEnd.y, 1.0f);
+
+		g.setColour(juce::Colours::black);
+		g.setFont(14.0f);
+		g.drawFittedText(juce::String(meterValue, 2) + " dB", center.x - 30, center.y + 20, 60, 20, juce::Justification::centred, 1);
 }
 
 void SeventySixCompressorAudioProcessorEditor::resized()
@@ -177,6 +205,12 @@ void SeventySixCompressorAudioProcessorEditor::resized()
 	ratio8Button.setBounds(470, 67, 15, 22);
 	ratio4Button.setBounds(470, 89, 15, 22);
 	allButtonsButton.setBounds(470, 111, 15, 22);
+
+	grButton.setBounds(660, 23, 15, 22);
+	gr4Button.setBounds(660, 45, 15, 22);
+	gr8Button.setBounds(660, 67, 15, 22);
+	grOffButton.setBounds(660, 89, 15, 22);
+
 		// This is generally where you'll want to lay out the positions of any
 		// subcomponents in your editor..
 }
@@ -206,5 +240,10 @@ void SeventySixCompressorAudioProcessorEditor::timerCallback()
 		ratio12Button.setToggleState(idx == 2, juce::dontSendNotification);
 		ratio20Button.setToggleState(idx == 3, juce::dontSendNotification);
 	}
+	grButton.setToggleState(meterMode == GR, juce::dontSendNotification);
+	gr8Button.setToggleState(meterMode == PLUS8, juce::dontSendNotification);
+	gr4Button.setToggleState(meterMode == PLUS4, juce::dontSendNotification);
+	grOffButton.setToggleState(meterMode == OFF, juce::dontSendNotification);
+
 	repaint();
 }
