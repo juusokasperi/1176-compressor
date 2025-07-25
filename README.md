@@ -1,4 +1,4 @@
-## miniRT
+## 1176 -style compressor audio plugin
 <img src="./img/compressor.png" width="700" alt="1176-Compressor" />
 
 - A classic 1176-style compressor written in C++ with the JUCE framework
